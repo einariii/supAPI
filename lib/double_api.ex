@@ -3,6 +3,8 @@ defmodule Supapi.DoubleAPI do
   Functions for calling the APIs and normalizing the JSON responses where necessary.
   The final function determines whether to persist a specific entry in the database, based on Genserver state.
   Add functions to add APIs to the supervision tree!
+
+  NB: This implementation lacks protocol for protecting against snowballing API calls that take more than 30 seconds to complete!!!
   """
   require Logger
   alias Supapi.Matches
@@ -49,11 +51,11 @@ defmodule Supapi.DoubleAPI do
   @doc """
   This function calls the feetball API and then sends the list of matches to `update_match`, below.
   """
-  def feetball_call(match_list, since \\ nil) do
-    # The `since` parameter should be a timestamp. If passed to the function, the response will only contain the matches created after `since`.
+  def feetball_call(match_list, only_after \\ nil) do
+    # The `only_after` parameter should be a timestamp. If passed to the function, the response will only contain the matches created after `only_after`.
     url =
-      if since do
-        "http://mocktest.footballapis.com:8080/feed/feetball?last_checked_at=#{since}"
+      if only_after do
+        "http://mocktest.footballapis.com:8080/feed/feetball?only_after=#{only_after}"
       else
         "http://mocktest.footballapis.com:8080/feed/feetball/"
       end

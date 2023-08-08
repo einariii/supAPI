@@ -16,12 +16,14 @@ defmodule Supapi.DoubleServer do
     {:ok, match_list}
   end
 
+  # To scale up, add new API calls from DoubleAPI to the pipeline below
   def handle_info(:start_calls, state) do
     new_state =
       state
       |> DoubleAPI.matchstream_call()
       |> DoubleAPI.feetball_call()
 
+    # Adjust the query interval value here, in seconds
     schedule_query(30)
     {:noreply, new_state}
   end
