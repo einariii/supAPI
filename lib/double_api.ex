@@ -12,7 +12,7 @@ defmodule Supapi.DoubleAPI do
   into two separate keys, "home_team" and "away_team." It then sends the list of matches to `update_match`, below.
   """
   def matchstream_call(match_list) do
-    case HTTPoison.get("http://footballtest.sportsapis.com:8080/feed/matchstream/") do
+    case HTTPoison.get("http://mocktest.footballapis.com:8080/feed/matchstream/") do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         matches =
           Jason.decode!(body)
@@ -49,12 +49,13 @@ defmodule Supapi.DoubleAPI do
   @doc """
   This function calls the feetball API and then sends the list of matches to `update_match`, below.
   """
-  def feetball_call(match_list, query \\ nil) do
+  def feetball_call(match_list, since \\ nil) do
+    # The `since` parameter should be a timestamp. If passed to the function, the response will only contain the matches created after `since`.
     url =
-      if query do
-        "http://footballtest.sportsapis.com:8080/feed/feetball?last_checked_at=#{query}"
+      if since do
+        "http://mocktest.footballapis.com:8080/feed/feetball?last_checked_at=#{since}"
       else
-        "http://footballtest.sportsapis.com:8080/feed/feetball/"
+        "http://mocktest.footballapis.com:8080/feed/feetball/"
       end
 
     case HTTPoison.get(url) do
